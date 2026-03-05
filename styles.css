@@ -471,7 +471,7 @@ h1 {
 
 .spin {
   transform-origin: 50% 50%;
-  animation: slowSpin 120s linear infinite;
+  animation: slowSpin 180s linear infinite;
 }
 
 /* bizarro “ink blots” */
