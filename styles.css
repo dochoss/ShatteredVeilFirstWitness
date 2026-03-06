@@ -13,6 +13,15 @@
   --glow: rgba(255, 255, 255, .25);
   --scratch: rgba(20, 13, 8, .42);
   --flicker: rgba(58, 39, 24, .14);
+  /* 0-10 sliders for the obscured Eidolarch title */
+  --eidolarch-splatter-opacity: 10;
+  --eidolarch-splatter-blur: 1;
+  --eidolarch-text-visibility: 4;
+
+  /* calculated values for the Eidolarch effects, derived from the sliders above */
+  --eidolarch-splatter-alpha: calc(clamp(0, var(--eidolarch-splatter-opacity), 10) / 10);
+  --eidolarch-splatter-blur-scale: calc(clamp(0, var(--eidolarch-splatter-blur), 10) / 10);
+  --eidolarch-text-alpha: calc(clamp(0, var(--eidolarch-text-visibility), 10) / 10);
 }
 
 /* --- page background --- */
@@ -372,6 +381,56 @@ h1 {
   will-change: transform, opacity;
 }
 
+.eidolarch-obscured {
+  position: relative;
+  isolation: isolate;
+  color: rgb(34 22 16 / calc(var(--eidolarch-text-alpha) * 0.14));
+  text-shadow:
+    0 0 .05em rgb(0 0 0 / calc(var(--eidolarch-text-alpha) * 0.16)),
+    .02em .02em .06em rgb(0 0 0 / calc(var(--eidolarch-text-alpha) * 0.1));
+  filter: blur(calc(.018em + ((1 - var(--eidolarch-text-alpha)) * .08em)));
+}
+
+.eidolarch-obscured::before,
+.eidolarch-obscured::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.eidolarch-obscured::before {
+  inset: -.24em -.34em -.18em -.26em;
+  background:
+    radial-gradient(1.8em .82em at 16% 58%, rgb(106 18 18 / calc(var(--eidolarch-splatter-alpha) * 0.88)), transparent 66%),
+    radial-gradient(2.35em 1em at 44% 52%, rgb(122 24 24 / calc(var(--eidolarch-splatter-alpha) * 0.94)), transparent 68%),
+    radial-gradient(2.1em .9em at 70% 48%, rgb(95 14 14 / calc(var(--eidolarch-splatter-alpha) * 0.9)), transparent 67%),
+    radial-gradient(1.3em .62em at 88% 46%, rgb(114 20 20 / calc(var(--eidolarch-splatter-alpha) * 0.78)), transparent 69%),
+    radial-gradient(.8em .48em at 62% 82%, rgb(101 18 18 / calc(var(--eidolarch-splatter-alpha) * 0.58)), transparent 72%),
+    radial-gradient(.42em .28em at 27% 18%, rgb(83 11 11 / calc(var(--eidolarch-splatter-alpha) * 0.46)), transparent 74%);
+  filter: blur(calc(.08em + (var(--eidolarch-splatter-blur-scale) * .18em)));
+  mix-blend-mode: multiply;
+  opacity: calc(var(--eidolarch-splatter-alpha) * 0.97);
+  transform: rotate(-2.8deg);
+  z-index: 2;
+}
+
+.eidolarch-obscured::after {
+  inset: .22em -.08em auto -.02em;
+  height: .28em;
+  background:
+    linear-gradient(90deg,
+      transparent 0%,
+      rgb(108 17 17 / calc(var(--eidolarch-splatter-alpha) * 0.08)) 7%,
+      rgb(116 20 20 / calc(var(--eidolarch-splatter-alpha) * 0.72)) 18%,
+      rgb(82 10 10 / calc(var(--eidolarch-splatter-alpha) * 0.85)) 47%,
+      rgb(118 24 24 / calc(var(--eidolarch-splatter-alpha) * 0.66)) 79%,
+      transparent 100%);
+  filter: blur(calc(.06em + (var(--eidolarch-splatter-blur-scale) * .14em)));
+  transform: rotate(-2.4deg);
+  opacity: calc(var(--eidolarch-splatter-alpha) * 0.92);
+  z-index: 3;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .eidolarch-whisper {
     animation-duration: 20s;
@@ -432,6 +491,13 @@ h1 {
   background: rgba(0, 0, 0, .22);
   transform: rotate(-6deg);
   opacity: .35;
+}
+
+.small-note {
+  display: inline-block;
+  font-size: small;
+  line-height: 1;
+  opacity: .82;
 }
 
 /* rotating spiral SVG wrapper */
