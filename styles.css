@@ -133,6 +133,11 @@ h1 {
   position: relative;
 }
 
+.grid.single-column {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;
