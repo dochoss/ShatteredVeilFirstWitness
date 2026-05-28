@@ -112,20 +112,6 @@
 
         <p>that somewhere beneath our world, this broken mind still lives. And I
           intend to find it.</p>
-
-        <!-- <p class="toc">
-          <strong>Contents (partial):</strong>
-        <ol>
-          <li><a href="#c1">On the Nature of Memory Before Minds</a></li>
-          <li><a href="#c2">The Spiral Signature</a></li>
-          <li><a href="#c3">The War of Principles</a></li>
-          <li><a href="#c4">The Breaking of the First Witness</a></li>
-          <li><a href="#c5">The Mountain of Memory Beneath the World</a></li>
-          <li><a href="#c6">The Nine Nails</a></li>
-          <li><a href="#c7">On the Harvest of Flesh</a></li>
-          <li><a href="#c8">Signs of Awakening</a></li>
-        </ol>
-        </p> -->
       </article>
 
       <aside class="margin">
@@ -237,12 +223,29 @@
     });
 
     // “sigil rotates when unobserved” gag:
-    // if the tab is hidden, speed up spiral; when visible, slow it down.
+    // pause the spiral whenever it's actually on-screen; let it spin
+    // while it's scrolled out of view or the tab is hidden.
     const spiral = document.querySelector(".spin");
-    document.addEventListener("visibilitychange", () => {
+    let onScreen = false;
+
+    const applyState = () => {
       if (!spiral) return;
-      spiral.style.animationDuration = document.hidden ? "4s" : "30s";
-    });
+      const watched = onScreen && !document.hidden;
+      spiral.style.animationPlayState = watched ? "paused" : "running";
+      // when unobserved, spin noticeably faster
+      spiral.style.animationDuration = watched ? "180s" : "45s";
+    };
+
+    if (spiral && "IntersectionObserver" in window) {
+      const io = new IntersectionObserver(entries => {
+        onScreen = entries[0].isIntersecting;
+        applyState();
+      }, { threshold: 0.2 });
+      io.observe(spiral);
+    }
+
+    document.addEventListener("visibilitychange", applyState);
+    applyState();
   </script>
 </body>
 
